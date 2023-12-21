@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import { ref } from 'vue';
+
 
 const emit = defineEmits(['gridchanged']);
-const checked = false;
+const checked = ref(false);
 
 function onGridChange() {
-    let newGrid = checked ? 4 : 3
+    let newGrid = checked.value ? 4 : 3
     emit('gridchanged', newGrid)
 }
 </script>
