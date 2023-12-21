@@ -4,13 +4,13 @@ import { ref } from 'vue';
 const picture = ref('none');
 const pictureConfig = [
     { index: 'pic0', url: 'none' },
-    { index: 'pic1', url: '/pic1.jpg' },
-    { index: 'pic2', url: '/pic2.jpg' },
-    { index: 'pic3', url: '/pic3.jpg' },
-    { index: 'pic4', url: '/pic4.jpg' },
-    { index: 'pic5', url: '/pic5.jpg' },
-    { index: 'pic6', url: '/pic6.jpg' },
-    { index: 'pic7', url: '/pic7.jpg' }
+    { index: 'pic1', url: './pic1.jpg' },
+    { index: 'pic2', url: './pic2.jpg' },
+    { index: 'pic3', url: './pic3.jpg' },
+    { index: 'pic4', url: './pic4.jpg' },
+    { index: 'pic5', url: './pic5.jpg' },
+    { index: 'pic6', url: './pic6.jpg' },
+    { index: 'pic7', url: './pic7.jpg' }
 ];
 const emit = defineEmits(['bgchanged'])
 function onPictureChange() {
