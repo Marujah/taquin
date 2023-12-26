@@ -17,9 +17,9 @@ const props = defineProps(
     ]);
 
 const myPosition = ref(props.position);
-
 const myPosX = computed(() => (-props.myWidth * ((props.number - 1) % props.factor)));
 const myPosY = computed(() => -(Math.floor((props.number - 1) / props.factor) * props.myHeight));
+
 
 function getPossiblePositions() {
     let positionArray = [...myPosition.value]
@@ -59,7 +59,7 @@ onMounted(() => {
 <template>
     <div class="piece" ref="thisPiece"
         :style="background !== 'none' ? { 'background': 'url(' + background + ') no-repeat ' + myPosX + 'px ' + myPosY + 'px rgba(0, 0, 0, 0.1)' } : { 'background': 'rgba(0, 0, 0, 0.4)' }"
-        @click="movePiece">
+        @click="movePiece" @touchstart="movePiece">
         <span v-if="background === 'none'">{{ number }}</span>
     </div>
 </template>
@@ -75,7 +75,7 @@ onMounted(() => {
     align-items: center;
     font-size: 3em;
     transform: translate3d(var(--moveX), var(--moveY), 0);
-    transition: transform 0.15s ease-in-out 0s;
+    transition: all 0.2s ease-in-out 0s;
     cursor: pointer;
 
     pre {

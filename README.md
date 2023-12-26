@@ -1,18 +1,19 @@
-# Vue 3 + TypeScript + Vite
+# (Vue3) - Jeu de Taquin (Sliding Puzzle)
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+This is small game made with Vue3. you can play it here [https://marujah.github.io/taquin/](https://marujah.github.io/taquin/)
 
-## Recommended IDE Setup
+"Jeu de Taquin" is a French term that translates to "sliding puzzle" in English. It's a classic puzzle game that involves rearranging a set of square tiles to form a specific picture or pattern. The game is played on a grid with one empty space, allowing players to slide tiles into the empty spot.
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+## Objective
 
-## Type Support For `.vue` Imports in TS
+The goal of the game is to rearrange the tiles from a scrambled starting position to a predetermined final configuration. The challenge lies in finding the correct sequence of moves to solve the puzzle.
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
+## Example: 15 Puzzle
 
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
+The most famous "Jeu de Taquin" example is the 15 Puzzle. It consists of a 4x4 grid with numbered tiles from 1 to 15 and one empty space. Players must slide the tiles into the empty space to achieve a sequential order.
 
-1. Disable the built-in TypeScript Extension
-   1. Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-   2. Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+## Difficulty
+
+The difficulty of "Jeu de Taquin" puzzles can vary based on factors such as grid size, image complexity, and initial tile arrangement. It's a timeless puzzle concept that has been adapted into various forms and themes over the years.
+
+

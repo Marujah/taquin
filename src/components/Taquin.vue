@@ -3,24 +3,19 @@ import Piece from './Piece.vue';
 import GridConfig from './GridConfig.vue';
 import PictureConfig from './PictureConfig.vue';
 import Modal from './Modal.vue';
-import { onMounted, ref} from 'vue';
+import { computed, ref, watch} from 'vue';
 
 type TPiece = { number: number, position: string}
 
-const firstFreePosition = ref('');
-const freePosition = ref('');
 const shuffledPieces = ref<TPiece[]>([]);
-const allPositions = ref<string[]>([]);
 const moves = ref(0);
 const grid = ref(3);
 const gridGap = ref('1px');
 const bgStyle = ref('none');
-const pieceWidth = ref(0);
-const pieceHeight = ref(0);
 const gameStarts = ref(false);
 const gameIsDone = ref(false);
-const randomMoves = ref<any[]>([]);
-const winningPieces = ref<TPiece[]>([]);
+const randomMoves = ref<string[]>([]);
+const freePosition = ref('');
 
 function getPossibleMoves(position: string, allPos: string[]) {
     let positionArray = [...position]
@@ -48,25 +43,9 @@ function chooseRandomMove(arr: string[] ) {
     freePosition.value = arr[j]
     return arr[j]
 }
-function shuffle(arr: string[]) {
-    arr.some((item) => {
-        let piecePosition = item.split('-')[1]
-        for (let prop of shuffledPieces.value) {
-            if (prop.position === piecePosition) {
-                prop.position = item.split('-')[0]
-                break
-            }
-        }
-    })
-    return shuffledPieces.value
-}
 
 function isGameDone(arr1: any[], arr2: any[]) {
     const arr3 = arr2.sort((a, b) => { return a.number > b.number ? 1 : (a.number < b.number ? -1 : 0) })
-    console.log(arr1.length, arr3.length)
-    console.log(JSON.stringify(arr1))
-    console.log(JSON.stringify(arr3))
-    console.log(arr1.length === arr3.length, JSON.stringify(arr1) === JSON.stringify(arr3))
     if (arr1.length !== arr3.length) return false
     if (JSON.stringify(arr1) !== JSON.stringify(arr3)) return false
     gridGap.value = '0px';
@@ -97,18 +76,34 @@ function changePieceBackground(background: string) {
     gameStarts.value = false
     randomMoves.value = []
 }
+
 function gridChanged(newGrid: number) {
-    grid.value = newGrid
-    pieceWidth.value = Math.floor(578 / newGrid);
-    pieceHeight.value = Math.floor(578 / newGrid);
-    gameStarts.value = false
-    randomMoves.value = []
+    grid.value = newGrid;
+    shuffledPieces.value = [];
+    resetGame();
 }
+
 function resetGame() {
-    gameStarts.value = false;
     moves.value = 0;
+    gameStarts.value = false;
     gameIsDone.value = false;
+    randomMoves.value = []
+    freePosition.value = '';
 }
+
+function shuffle(arr: string[]) {
+    arr.some((item) => {
+        let piecePosition = item.split('-')[1]
+        for (let prop of shuffledPieces.value) {
+            if (prop.position === piecePosition) {
+                prop.position = item.split('-')[0]
+                break
+            }
+        }
+    })
+    return shuffledPieces.value
+}
+
 function startGame() {
     randomMoves.value = []
     let possibleMoves = getPossibleMoves(freePosition.value, allPositions.value)
@@ -117,9 +112,9 @@ function startGame() {
         chooseRandomMove(possibleMoves)
         possibleMoves = getPossibleMoves(freePosition.value, allPositions.value)
         count++
-    } while (count < 20 || freePosition.value !== firstFreePosition.value)
+    } while (count < 80 || freePosition.value !== allPositions.value[allPositions.value.length - 1])
     // sort shuffled array over positions
-    shuffledPieces.value = shuffle(randomMoves.value).sort(function (a, b) { return (a.position > b.position) ? 1 : ((b.position > a.position) ? -1 : 0) })
+    shuffledPieces.value = shuffle(randomMoves.value).sort(function (a, b) { return (a.position > b.position) ? 1 : ((b.position > a.position) ? -1 : 0) });
     moves.value = 0
     gameStarts.value = true
 }
@@ -128,7 +123,9 @@ function cloneArray(inputArr: any) {
     return JSON.parse(JSON.stringify(inputArr))
 }
 
-function calcAllPositions(): string[] {
+const pieceWidth = computed(() => Math.floor(578 / grid.value));
+const pieceHeight = computed(() => Math.floor(578 / grid.value));
+const allPositions = computed<string[]>(() => {
     let result = []
     for (let i = 0; i < (grid.value * grid.value); i++) {
         let x = Math.floor(i / grid.value)
@@ -136,8 +133,8 @@ function calcAllPositions(): string[] {
         result.push(x + '' + y)
     }
     return result
-}
-function calcWinningPieces() {
+})
+const winningPieces = computed<TPiece[]>(() => {
     let result = [];
     for (let i = 0; i < (grid.value * grid.value); i++) {
         let x = Math.floor(i / grid.value)
@@ -146,17 +143,17 @@ function calcWinningPieces() {
     }
     result.pop();
     return result;
-}
+});
 
-onMounted(() => {
-    pieceWidth.value = Math.floor(578 / grid.value);
-    pieceHeight.value = Math.floor(578 / grid.value);
-    allPositions.value = calcAllPositions();
-    winningPieces.value = calcWinningPieces();
-    shuffledPieces.value = cloneArray(winningPieces.value);
-    freePosition.value = allPositions.value[allPositions.value.length - 1];
-    firstFreePosition.value = freePosition.value;
+watch(allPositions, (newVal) => {
+    freePosition.value = newVal[newVal.length - 1];
+});
+
+watch(winningPieces, (val) => {
+    shuffledPieces.value = cloneArray(val);
 })
+
+
 </script>
 
 <template>
@@ -169,7 +166,7 @@ onMounted(() => {
             <Modal v-if="gameIsDone" @reset="resetGame">
                 <p><strong>You win</strong><br><strong>{{ moves }}</strong> moves!!!</p>
             </Modal>
-            <button class="start-game" @click="startGame">Start Game</button>
+            <button class="start-game" @click="startGame" :disabled="shuffledPieces.length === 0">Start Game</button>
             <div class="moves">Moves: {{ moves }}</div>
             <div class="taquin" :style="{
                 gridTemplateColumns: 'repeat(' + grid + ', 1fr)',
@@ -181,7 +178,7 @@ onMounted(() => {
                 </div>
                 <Piece
                     v-for="(piece, index) in shuffledPieces"
-                    :key="index"
+                    :key="`${grid}-${allPositions[index]}`"
                     :number="piece.number"
                     :position="allPositions[index]"
                     :allPositions="allPositions"
@@ -223,6 +220,11 @@ onMounted(() => {
 
     &:hover {
         background-color: darken(#396add, 10%);
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+        background-color: #a9a9aa;
     }
 }
 
